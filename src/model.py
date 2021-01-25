@@ -29,6 +29,6 @@ class Net(nn.Module):
 
 if __name__ == "__main__":
     data = torch.rand(10, 1000)
-    model = Net(1000, 10).to(device)
+    model = Net(1000, 10)
     print(model)
-    print(model(data).shape)
+    print(model(data))

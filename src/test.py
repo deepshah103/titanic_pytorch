@@ -6,14 +6,15 @@ import os
 import torch
 from tqdm import tqdm
 
+
 # hyper parameters
-input_size = 1000
-n_class = 10
+input_size = 7
+n_class = 2
 batch_size = 32
 train_test_split_ratio = 0.8
 data_path = '../data'
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-results_path = '../results'
+results_path = '../result'
 
 
 def test(model, dataloader):
@@ -21,7 +22,7 @@ def test(model, dataloader):
         correct = 0
         total = 0
         for sample in tqdm(dataloader):
-            features = sample['features'].to(device)
+            features = sample['features'].float().to(device)
             target = sample['target'].to(device)
             outputs = model(features)
             _, predicted = torch.max(outputs.data, 1)
@@ -37,7 +38,7 @@ if __name__ == '__main__':
         [transforms.ToTensor(),
          ])
     print("Extracting Dataset")
-    transformed_dataset = Data(os.path.join(data_path), transform=compose)
+    transformed_dataset = Data(os.path.join(data_path), transform=False)
     print("Dataset loading done!\n")
     train_size = int(train_test_split_ratio * len(transformed_dataset))
     train_set, test_set = torch.utils.data.random_split(transformed_dataset,
@@ -47,3 +48,5 @@ if __name__ == '__main__':
     net = Net(input_size, n_class).to(device)
     net.load_model(os.path.join(results_path, 'model.pth'))
     net = test(net, test_loader)
+
+
